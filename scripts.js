@@ -1,14 +1,23 @@
+'strict mode'
 
 // Variables
 
 const variables = {
     arcanePower : 0,
     arcaneLimit : 500,
-    arcaneClickVal: 1,
-    arcaneReinforceCost: 25,
-    arcaneResetCost: 300,
-    arcaneReset: 1,
-    arcaneExpansionCost: 75
+    arcaneReset: 0,
+    arcaneReinforceLevel: 0,
+    arcaneExpansionLevel: 0,
+    incrementDelay: 1000
+}
+
+const defaults = {
+    arcanePower : 0,
+    arcaneLimit : 500,
+    arcaneReset: 0,
+    arcaneReinforceLevel: 0,
+    arcaneExpansionLevel: 0,
+    incrementDelay: 1000
 }
 
 // Buttons
@@ -20,42 +29,44 @@ var reinforceUnlock = false;
 var expansionUnlock = false;
 var arcaneResetUnlock = false;
 
+var arcaneClickVal = 1;
+var arcaneReinforceCost = 0;
+var arcaneResetCost = 0;
+var arcaneExpansionCost = 0;
+
 // Functions
 
 function arcaneClick() {
-    if ((variables.arcaneClickVal + variables.arcanePower) < variables.arcaneLimit) {
-        variables.arcanePower = variables.arcanePower + variables.arcaneClickVal;
+    if ((arcaneClickVal + variables.arcanePower) < variables.arcaneLimit) {
+        variables.arcanePower += arcaneClickVal;
     }
     else {
         variables.arcanePower = variables.arcaneLimit;
     }
-    document.getElementById("arcanePower").innerHTML = variables.arcanePower;
+    document.getElementById("arcanePower").innerHTML = Round(variables.arcanePower);
 }
 function buyArcaneReinforce() {
-    if (variables.arcanePower >= variables.arcaneReinforceCost) {
-        variables.arcaneClickVal += variables.arcaneReset;
-        variables.arcanePower -= variables.arcaneReinforceCost;
-        variables.arcaneReinforceCost *= 1.5;
+    if (variables.arcanePower >= arcaneReinforceCost) {
+        variables.arcanePower -= arcaneReinforceCost;
+        variables.arcaneReinforceLevel++;
         Update();
     }
 }
 function buyArcaneExpansion() {
-    if (variables.arcanePower >= variables.arcaneExpansionCost) {
+    if (variables.arcanePower >= arcaneExpansionCost) {
         variables.arcaneLimit *= 1.2;
-        variables.arcanePower -= variables.arcaneExpansionCost;
-        variables.arcaneExpansionCost *= 1.4;
+        variables.arcanePower -= arcaneExpansionCost;
+        variables.arcaneExpansionLevel++;
         Update();
     }
 }
 function buyArcaneReset() {
-    if (variables.arcanePower >= variables.arcaneResetCost) {
-        variables.arcaneClickVal = Math.pow(2, variables.arcaneReset);
-        variables.arcaneReinforceCost = 25;
-        variables.arcaneExpansionCost = 100;
+    if (variables.arcanePower >= arcaneResetCost) {
         variables.arcanePower = 0;
-        variables.arcaneLimit = 500 * (Math.pow(2, variables.arcaneReset));
+        variables.arcaneLimit = 500 * (Math.pow(2, variables.arcaneReset + 1));
         variables.arcaneReset++;
-        variables.arcaneResetCost *= 10;
+        variables.arcaneReinforceLevel = 0;
+        variables.arcaneExpansionLevel = 0;
         Update();
     }
 }
@@ -63,35 +74,45 @@ function buyArcaneReset() {
 // Updates Costs/Values for Variables, Called Whenever Purchasing an Upgrade
 
 function Update() {
-    Round(variables);
-    document.getElementById("arcanePower").innerHTML = variables.arcanePower;
-    document.getElementById("arcaneClickVal").innerHTML = variables.arcaneClickVal;
-    document.getElementById("arcaneReinforceCost").innerHTML = variables.arcaneReinforceCost;
-    document.getElementById("arcaneResetCost").innerHTML = variables.arcaneResetCost;
-    document.getElementById("arcaneLimit").innerHTML = variables.arcaneLimit;
-    document.getElementById("arcaneExpansionCost").innerHTML = variables.arcaneExpansionCost;
-    document.getElementById("arcaneReset").innerHTML = variables.arcaneReset;
+    // Modify The Cost Values
+    arcaneReinforceCost = 25 * Math.pow(1.5, variables.arcaneReinforceLevel);
+    arcaneResetCost = 300 * Math.pow(10, variables.arcaneReset);
+    arcaneExpansionCost = 75 * Math.pow(1.5, variables.arcaneExpansionLevel);
+    arcaneClickVal = 1 + (variables.arcaneReinforceLevel * (1 + variables.arcaneReset));
+
+    // Update Displayed Values
+
+    document.getElementById("arcanePower").innerHTML = Round(variables.arcanePower);
+    document.getElementById("arcaneClickValue").innerHTML = Round(arcaneClickVal);
+    document.getElementById("arcaneReinforceCost").innerHTML = Round(arcaneReinforceCost);
+    document.getElementById("arcaneResetCost").innerHTML = Round(arcaneResetCost);
+    document.getElementById("arcaneLimit").innerHTML = Round(variables.arcaneLimit);
+    document.getElementById("arcaneExpansionCost").innerHTML = Round(arcaneExpansionCost);
+    document.getElementById("arcaneReset").innerHTML = Round(variables.arcaneReset);
+
 
 }
 
 // Rounds down all the values
 
-function Round(object) {
-    for (let key of Object.keys(object)) {
-        object[key] = Math.floor(object[key]);
-    }
+function Round(toRound) {
+    return (Math.floor(toRound));
 }
 
 // Resets all values to default
 
 function Reset() {
     variables.arcanePower = 0;
-    variables.arcaneClickVal = 1;
     variables.arcaneLimit = 500;
-    variables.arcaneReinforceCost = 25;
-    variables.arcaneResetCost = 300;
-    variables.arcaneReset = 1;
-    variables.arcaneExpansionCost = 75;
+    variables.arcaneReinforceLevel = 0;
+    variables.arcaneReset = 0;
+    variables.arcaneExpansionLevel = 0;
+    reinforceUnlock = false;
+    expansionUnlock = false;
+    arcaneResetUnlock = false;
+    reinforceButton.classList.toggle("hidden");
+    expansionButton.classList.toggle("hidden");
+    arcaneResetButton.classList.toggle("hidden");
     localStorage.removeItem("save");
     Update();
 }
@@ -122,12 +143,13 @@ function save() {
 function load() {
     var savegame = JSON.parse(localStorage.getItem("save"));
     for (let key in savegame) {
-        if (savegame[key] !== "undefined") variables[key] = savegame[key];
+        if (savegame[key] !== "undefined") variables[key] = savegame[key] ?? defaults[key];
     }
     Update();
 }
 
 load();
-setInterval(save, 10000)
+setInterval(save, 5000)
 setInterval(ButtonUnlock, 100)
+setInterval(arcaneClick, variables.incrementDelay)
 
