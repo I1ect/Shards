@@ -1,0 +1,36 @@
+.hidden {
+    display: none
+}
+
+body {
+    margin: 40px;
+    background-color: black;
+    color: white;
+    font-family: 'Slabo 27px', serif;
+    font-size: 20px;
+}
+
+button {
+    font-family: 'Slabo 27px', serif;
+    font-size: 20px;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 6fr;
+    grid-template-areas: "topbar topbar" "body1 body2";
+    gap: 50px 50px
+}
+
+.topbar {
+    grid-area: topbar;
+}
+
+.body1 {
+    grid-area: body1;
+}
+
+.body2 {
+    grid-area: body2;
+}
