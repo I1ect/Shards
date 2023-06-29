@@ -18,21 +18,26 @@
         <div class = "body1">
             Arcane Power: <span id = "arcanePower">0</span> / <span id = "arcaneLimit">500</span>
             <br>
-            Arcane Power Per Click: <span id = "arcaneClickValue">1</span>
-            <br>
-            Arcane Reset: <span id = "arcaneReset">1</span>
-            <br>
             <button onclick="arcaneClick()">Produce Arcane Power</button>
+            <hr> <br> <br>
+            <button id="buttonReinforce" class="hidden" onclick="buyArcaneReinforce()">Increase Arcane Power Per Click: <span id = "arcaneReinforceCost">25</span> </button> <br>
+            Arcane Power Per Click: <span id = "arcaneClickValue">1</span>
             <br> <br>
-            <button id="buttonReinforce" class="hidden" onclick="buyArcaneReinforce()">Increase Arcane Power Per Click: <span id = "arcaneReinforceCost">25</span> </button>
-            <button id="buttonExpansion" class="hidden" onclick="buyArcaneExpansion()">Increase Arcane Power Limit: <span id = "arcaneExpansionCost">75</span> </button>
+            <button id="buttonExpansion" class="hidden" onclick="buyArcaneExpansion()">Increase Arcane Power Limit: <span id = "arcaneExpansionCost">75</span> </button> <br>
+            Compacity Increased by: <span id = "compacityMultiplier">1</span>x
             <br> <br>
             <button id="buttonArcaneReset" class="hidden" onclick="buyArcaneReset()">Resets Progress to Increase Compacity and Click Power: <span id = "arcaneResetCost">300</span> </button>
+            <br>
+            Number of Resets: <span id = "arcaneReset">1</span> increases Power and Compacity by <span id = "powerPerClick">1</span>x
             <br> <br>
         </div>
 
         <div class = "body2">
-            Unlocks at 10,000 Arcane Power
+            <span id = "unlockTransfer">Unlocks at 10,000 Arcane Power</span>
+
+            <div class = "arcaneTransferUI">
+                Hello Cruel World
+            </div>
         </div>
 
     </div>

@@ -34,3 +34,7 @@ button {
 .body2 {
     grid-area: body2;
 }
+
+.arcaneTransferUI {
+    display: none;
+}

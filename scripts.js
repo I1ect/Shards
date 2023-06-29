@@ -34,16 +34,18 @@ let arcaneReinforceCost = 0
 let arcaneResetCost = 0
 let arcaneExpansionCost = 0
 
+const arcaneTransfer = document.getElementById('arcaneTransferUI')
+
 // Functions
 
 function arcaneClick () {
   if ((arcaneClickVal + variables.arcanePower) < variables.arcaneLimit) {
-    variables.arcanePower += arcaneClickVal;
+    variables.arcanePower += arcaneClickVal
   }
   else {
-    variables.arcanePower = variables.arcaneLimit;
+    variables.arcanePower = variables.arcaneLimit
   }
-  document.getElementById('arcanePower').innerHTML = Round(variables.arcanePower);
+  document.getElementById('arcanePower').innerHTML = Round(variables.arcanePower)
 }
 // eslint-disable-next-line no-unused-vars
 function buyArcaneReinforce () {
@@ -59,7 +61,7 @@ function buyArcaneExpansion () {
     variables.arcaneLimit *= 1.2
     variables.arcanePower -= arcaneExpansionCost
     variables.arcaneExpansionLevel++
-    Update();
+    Update()
   }
 }
 // eslint-disable-next-line no-unused-vars
@@ -92,6 +94,8 @@ function Update () {
   document.getElementById('arcaneLimit').innerHTML = Round(variables.arcaneLimit)
   document.getElementById('arcaneExpansionCost').innerHTML = Round(arcaneExpansionCost)
   document.getElementById('arcaneReset').innerHTML = Round(variables.arcaneReset)
+  document.getElementById('powerPerClick').innerHTML = Math.pow(2, variables.arcaneReset)
+  document.getElementById('compacityMultiplier').innerHTML = Math.pow(1.2, variables.arcaneExpansionLevel)
 }
 
 // Rounds down all the values
@@ -121,7 +125,7 @@ function Reset () {
 
 // Checks Button Unlocked
 
-function ButtonUnlock() {
+function ButtonUnlock () {
   if (!reinforceUnlock && variables.arcanePower >= 10) {
     reinforceButton.classList.toggle('hidden', !(variables.arcanePower >= 10))
     reinforceUnlock = true
@@ -133,6 +137,10 @@ function ButtonUnlock() {
   if (!arcaneResetUnlock && variables.arcanePower >= 100) {
     arcaneResetButton.classList.toggle('hidden', !(variables.arcanePower >= 100))
     arcaneResetUnlock = true
+  }
+
+  if (variables.arcanePower >= 10000) {
+    
   }
 }
 
